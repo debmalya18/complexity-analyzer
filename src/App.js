@@ -150,9 +150,20 @@ function App() {
   const [code, setCode] = useState("");
   const [result, setResult] = useState(null);
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!code.trim()) { alert("Please paste some code first!"); return; }
-    setResult(analyzeComplexity(code));
+    
+    try {
+      const response = await fetch("https://complexity-backend-production.up.railway.app/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: code })
+      });
+      const data = await response.json();
+      setResult(data);
+    } catch (error) {
+      setResult(analyzeComplexity(code));
+    }
   };
 
   return (
